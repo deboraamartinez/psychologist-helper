@@ -1,0 +1,87 @@
+// This is your Prisma schema file
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Prisma Client Generator
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Datasource Configuration
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum Role {
+  PATIENT
+  PSYCHOLOGIST
+}
+
+enum StatusUser {
+  ENABLED
+  PENDING
+  REJECTED
+  DISABLED
+  BLOCKED
+}
+
+enum SessionStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+// Models
+model User {
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  email        String       @unique
+  password     String?
+  status       StatusUser  
+  role         Role[]  
+  phoneNumber  String      
+  fullName     String
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+
+  patient      Patient?
+  psychologist Psychologist?
+
+  @@map("user")
+}
+
+model Patient {
+  id                    String     @id @default(auto()) @map("_id") @db.ObjectId
+  emergencyPhone        String
+  emergencyContactName  String
+  userId                String     @unique
+  user                  User       @relation(fields: [userId], references: [id])
+  
+  // Reverse relation to Session
+  sessions              Session[] @relation("PatientSessions")
+
+  @@map("patient")
+}
+
+model Psychologist {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  crp       String
+  userId    String     @unique
+  user      User       @relation(fields: [userId], references: [id])
+  
+  // Reverse relation to Session
+  sessions  Session[]  @relation("PsychologistSessions")
+
+  @@map("psychologist")
+}
+
+model Session {
+  id               String         @id @default(auto()) @map("_id") @db.ObjectId
+  date             DateTime
+  patientId        String
+  psychologistId   String
+  patient          Patient        @relation("PatientSessions", fields: [patientId], references: [id])
+  psychologist     Psychologist   @relation("PsychologistSessions", fields: [psychologistId], references: [id])
+  status           SessionStatus  @default(SCHEDULED)
+  createdAt        DateTime       @default(now()) @map("created_at")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
+}
