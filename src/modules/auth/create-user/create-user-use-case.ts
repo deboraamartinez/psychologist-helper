@@ -22,52 +22,48 @@ export class CreateUserUseCase {
 
   async execute(data: ICreateUserUseCase) {
     try {
-      const [foundedUser, foundedUserByPhone] = await this.prisma.$transaction([
-        this.prisma.user.findFirst({
-          where: { email: data.email },
-        }),
-        this.prisma.user.findFirst({
-          where: { phoneNumber: data.phoneNumber },
-        }),
-      ]);
-
+      const foundedUser = await this.prisma.user.findFirst({
+        where: { email: data.email },
+      });
       if (foundedUser) {
         throw new BadRequestException('Este e-mail já está em uso');
       }
-
+  
+      const foundedUserByPhone = await this.prisma.user.findFirst({
+        where: { phoneNumber: data.phoneNumber },
+      });
       if (foundedUserByPhone) {
         throw new BadRequestException('Este número de telefone já está em uso');
       }
 
+      if (!data.crp) {
+        throw new BadRequestException('Psicólogo deve ter CRP');
+      }
+  
       const passwordHash = await hash(data.password, 10);
-
-      await this.prisma.$transaction(async (tx) => {
-        const user = await tx.user.create({
-          data: {
-            email: data.email,
-            password: passwordHash,
-            phoneNumber: data.phoneNumber,
-            status: data.status,
-            role: data.role,
-            fullName: data.fullName,
-          },
-        });
-
-        if (!data.crp) {
-          throw new BadRequestException('Psicólogo deve ter CRP');
-        }
-
-        await tx.psychologist.create({
-          data: {
-            crp: data.crp,
-            userId: user.id,
-          },
-        });
+  
+      const user = await this.prisma.user.create({
+        data: {
+          email: data.email,
+          password: passwordHash,
+          phoneNumber: data.phoneNumber,
+          status: data.status,
+          role: data.role,
+          fullName: data.fullName,
+        },
       });
-
+  
+      await this.prisma.psychologist.create({
+        data: {
+          crp: data.crp,
+          userId: user.id,
+        },
+      });
+  
       return { message: 'Usuário criado com sucesso!' };
     } catch (error) {
       throw error;
     }
   }
+  
 }
