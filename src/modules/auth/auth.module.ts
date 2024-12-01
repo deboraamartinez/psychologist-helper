@@ -19,7 +19,7 @@ import { JwtStrategy } from './authentication/jwt.strategy';
         return {
           secret: configService.get<string>('JWT_SECRET_KEY'),
           signOptions: {
-            expiresIn: configService.get<string>('JWT_EXPIRES_IN'),
+            expiresIn: '7d',
           },
         };
       },
