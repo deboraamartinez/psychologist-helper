@@ -30,13 +30,9 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       ignoreExpiration: false,
       secretOrKey: configService.get<string>('JWT_SECRET_KEY'),
     });
-
-    console.log('JWT_SECRET_KEY carregado:', configService.get<string>('JWT_SECRET_KEY'));
-
   }
 
   async validate(payload: iJwtPayload) {
-    console.log('Payload decodificado JWT:', payload);
     const user = await this.prisma.user.findUnique({
       where: { id: payload.sub },
       include: {

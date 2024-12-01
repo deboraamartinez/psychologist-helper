@@ -7,12 +7,9 @@ import { SessionModule } from './modules/sessions/session.module';
 import { PrismaService } from './prisma/prisma.service';
 import { MulterModule } from '@nestjs/platform-express';
 import { PatientsModule } from './modules/patient/patient.module';
+import { PsychologistModule } from './modules/psychologist/psychologist.module';
 
 dotenv.config();
-
-console.log('Aplicação iniciando com as seguintes configurações:');
-console.log('JWT_SECRET_KEY:', process.env.JWT_SECRET_KEY);
-console.log('PATH_UPLOADS:', process.env.PATH_UPLOADS);
 
 @Module({
   imports: [
@@ -25,7 +22,8 @@ console.log('PATH_UPLOADS:', process.env.PATH_UPLOADS);
     }),
     AuthenticationModule,
     SessionModule,
-    PatientsModule
+    PatientsModule,
+    PsychologistModule,
   ],
   controllers: [],
   providers: [PrismaService],

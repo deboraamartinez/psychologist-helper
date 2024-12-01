@@ -20,8 +20,6 @@ export class FindPatientByIdUseCase {
       },
     });
 
-    console.log(patient);
-
     if (!patient || patient.psychologistId !== user.psychologist.id) {
       throw new NotFoundException(
         'Paciente não encontrado ou não pertence a você.',

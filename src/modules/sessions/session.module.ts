@@ -7,7 +7,9 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
-//import { NodemailerService } from 'src/service/nodemailer/nodemailer.service';
+import { NodemailerService } from 'src/service/nodemailer/nodemailer.service';
+import { DeleteSessionController } from './delete-session/delete-session-controller';
+import { DeleteSessionUseCase } from './delete-session/delete-session-use-case';
 
 @Module({
   imports: [
@@ -27,11 +29,14 @@ import { ConfigService } from '@nestjs/config';
   controllers: [
     CreateSessionController,
     FindSessionController,
+    DeleteSessionController,
   ],
   providers: [
     PrismaService,
     CreateSessionUseCase,
     FindSessionUseCase,
+    NodemailerService,
+    DeleteSessionUseCase
   ],
 })
 export class SessionModule {}
