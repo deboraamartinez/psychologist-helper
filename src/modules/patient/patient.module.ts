@@ -8,6 +8,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
+import { DeletePatientByIdUseCase } from './delete-patient/delete-patient-by-id-use-case';
+import { DeletePatientController } from './delete-patient/delete-patient-controller';
 
 @Module({
   imports: [
@@ -24,7 +26,7 @@ import { ConfigService } from '@nestjs/config';
       },
     }),
   ],
-  controllers: [CreatePatientController, FindPatientController],
-  providers: [PrismaService, CreatePatientUseCase, FindPatientsUseCase, FindPatientByIdUseCase],
+  controllers: [CreatePatientController, FindPatientController, DeletePatientController],
+  providers: [PrismaService, CreatePatientUseCase, FindPatientsUseCase, FindPatientByIdUseCase, DeletePatientByIdUseCase],
 })
 export class PatientsModule {}
