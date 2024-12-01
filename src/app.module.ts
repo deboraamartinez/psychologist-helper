@@ -10,6 +10,10 @@ import { PatientsModule } from './modules/patient/patient.module';
 
 dotenv.config();
 
+console.log('Aplicação iniciando com as seguintes configurações:');
+console.log('JWT_SECRET_KEY:', process.env.JWT_SECRET_KEY);
+console.log('PATH_UPLOADS:', process.env.PATH_UPLOADS);
+
 @Module({
   imports: [
     ConfigModule.forRoot({
