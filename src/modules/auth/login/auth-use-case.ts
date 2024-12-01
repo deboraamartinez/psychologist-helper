@@ -17,7 +17,7 @@ export class AuthUseCase {
 
   async execute({ email, password }: IAuth) {
     try {
-      email.toLowerCase();
+      email = email.toLowerCase();
 
       const user = await this.prisma.user.findUnique({
         where: {
@@ -36,11 +36,18 @@ export class AuthUseCase {
 
       const { password: _, ...userResult } = user;
 
-      return {
-        accessToken: this.jwtService.sign({
+      const accessToken = this.jwtService.sign(
+        {
           identifier: email,
           sub: user.id,
-        }),
+        },
+        {
+          expiresIn: '7d',
+        },
+      );
+
+      return {
+        accessToken,
         user: userResult,
       };
     } catch (error) {
