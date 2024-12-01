@@ -12,7 +12,7 @@ import { UpdatePsychologistUseCase } from './update-psychologist-use-case';
 import { JwtAuthGuard } from 'src/service/jwt/jwt-auth.guard';
 
 @Controller('/psychologist')
-export class FindPsychologistController {
+export class UpdatePsychologistController {
   constructor(
     private readonly updatePsychologistUseCase: UpdatePsychologistUseCase,
   ) {}

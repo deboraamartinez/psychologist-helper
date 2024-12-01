@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { FindPsychologistUseCase } from './find-psychologist/find-psychologist-use-case';
 import { FindPsychologistController } from './find-psychologist/find-psychologist-controller';
+import { UpdatePsychologistUseCase } from './update-user/update-psychologist-use-case';
+import { UpdatePsychologistController } from './update-user/update-psychologist-controller.ts';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -21,7 +23,7 @@ import { ConfigService } from '@nestjs/config';
       },
     }),
   ],
-  controllers: [FindPsychologistController],
-  providers: [PrismaService, FindPsychologistUseCase],
+  controllers: [FindPsychologistController, UpdatePsychologistController],
+  providers: [PrismaService, FindPsychologistUseCase, UpdatePsychologistUseCase],
 })
 export class PsychologistModule {}
