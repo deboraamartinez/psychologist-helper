@@ -11,7 +11,7 @@ import {
   import { CreatePatientUseCase } from './create-patient-use-case';
   import { JwtAuthGuard } from 'src/service/jwt/jwt-auth.guard';
   
-  @Controller('/patient')
+  @Controller('/patients')
   export class CreatePatientController {
     constructor(private readonly createPatientUseCase: CreatePatientUseCase) {}
   
