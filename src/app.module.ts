@@ -3,8 +3,10 @@ import { ConfigModule } from '@nestjs/config';
 import { envSchema } from './env';
 import * as dotenv from 'dotenv';
 import { AuthenticationModule } from './modules/auth/auth.module';
+import { SessionModule } from './modules/sessions/session.module';
 import { PrismaService } from './prisma/prisma.service';
 import { MulterModule } from '@nestjs/platform-express';
+import { PatientsModule } from './modules/patient/patient.module';
 
 dotenv.config();
 
@@ -18,6 +20,8 @@ dotenv.config();
       dest: process.env.PATH_UPLOADS,
     }),
     AuthenticationModule,
+    SessionModule,
+    PatientsModule
   ],
   controllers: [],
   providers: [PrismaService],

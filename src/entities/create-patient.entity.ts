@@ -1,13 +1,9 @@
 import { IsEmail, IsEnum, IsOptional, IsString, Length, Matches, IsArray, ArrayMinSize } from 'class-validator';
 import { Role, StatusUser } from '@prisma/client';
 
-export class CreateUserEntity {
+export class CreatePatientEntity {
   @IsEmail({}, { message: 'E-mail inválido' })
   email: string;
-
-  @IsString({ message: 'Senha é obrigatória' })
-  @Length(6, 20, { message: 'Senha deve ter entre 6 e 20 caracteres' })
-  password: string;
 
   @IsEnum(StatusUser, { message: 'Status inválido' })
   status: StatusUser;
@@ -23,15 +19,9 @@ export class CreateUserEntity {
   @IsEnum(Role, { each: true, message: 'Role inválida' })
   role: Role[];
 
-  @IsString({ message: 'CRP deve ser uma string' })
-  @Matches(/^\d{4,6}$/, { message: 'CRP deve ser um número com 4 a 6 dígitos' })
-  crp?: string;
-
-  @IsOptional()
   @IsString({ message: 'Telefone de emergência é obrigatório para pacientes' })
   emergencyPhone?: string;
 
-  @IsOptional()
   @IsString({ message: 'Nome do contato de emergência é obrigatório para pacientes' })
   emergencyContactName?: string;
 

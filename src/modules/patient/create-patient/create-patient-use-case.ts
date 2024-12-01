@@ -1,27 +1,28 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Role, StatusUser } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { hash } from 'bcryptjs';
-//import { NodemailerService } from 'src/service/nodemailer/nodemailer.service';
 
-interface ICreateUserUseCase {
+interface ICreatePatientUseCase {
   email: string;
-  password: string;
   status: StatusUser;
   phoneNumber: string;
   role: Role[];
-  crp?: string;
   emergencyPhone?: string;
   emergencyContactName?: string;
   fullName: string;
 }
 
 @Injectable()
-export class CreateUserUseCase {
+export class CreatePatientUseCase {
   constructor(private prisma: PrismaService) {}
 
-  async execute(data: ICreateUserUseCase) {
+  async execute(data: ICreatePatientUseCase, user: any) {
     try {
+      // Validate if the user is a psychologist
+      if (!user.psychologist?.id) {
+        throw new BadRequestException('Somente psicólogos podem criar pacientes.');
+      }
+
       const [foundedUser, foundedUserByPhone] = await this.prisma.$transaction([
         this.prisma.user.findFirst({
           where: { email: data.email },
@@ -39,13 +40,11 @@ export class CreateUserUseCase {
         throw new BadRequestException('Este número de telefone já está em uso');
       }
 
-      const passwordHash = await hash(data.password, 10);
-
       await this.prisma.$transaction(async (tx) => {
-        const user = await tx.user.create({
+        // Create the user entry
+        const createdUser = await tx.user.create({
           data: {
             email: data.email,
-            password: passwordHash,
             phoneNumber: data.phoneNumber,
             status: data.status,
             role: data.role,
@@ -53,19 +52,18 @@ export class CreateUserUseCase {
           },
         });
 
-        if (!data.crp) {
-          throw new BadRequestException('Psicólogo deve ter CRP');
-        }
-
-        await tx.psychologist.create({
+        // Create the patient entry and associate it with the psychologist
+        await tx.patient.create({
           data: {
-            crp: data.crp,
-            userId: user.id,
+            emergencyPhone: data.emergencyPhone,
+            emergencyContactName: data.emergencyContactName,
+            userId: createdUser.id,
+            psychologistId: user.psychologist.id, // Link to the psychologist
           },
         });
       });
 
-      return { message: 'Usuário criado com sucesso!' };
+      return { message: 'Paciente criado com sucesso!' };
     } catch (error) {
       throw error;
     }

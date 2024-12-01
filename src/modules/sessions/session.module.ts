@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
-import { CreateUserController } from './create-user/create-user-controller';
-import { CreateUserUseCase } from './create-user/create-user-use-case';
+import { CreateSessionController } from './create-session/create-session-controller';
+import { CreateSessionUseCase } from './create-session/create-session-use-case';
+import { FindSessionController } from './find-session/find-sessions-controller';
+import { FindSessionUseCase } from './find-session/find-sessions-use-case';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { AuthController } from './login/auth-controller';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { AuthUseCase } from './login/auth-use-case';
 import { ConfigService } from '@nestjs/config';
-import { JwtStrategy } from './authentication/jwt.strategy';
 //import { NodemailerService } from 'src/service/nodemailer/nodemailer.service';
 
 @Module({
@@ -26,14 +25,13 @@ import { JwtStrategy } from './authentication/jwt.strategy';
     }),
   ],
   controllers: [
-    CreateUserController,
-    AuthController
+    CreateSessionController,
+    FindSessionController,
   ],
   providers: [
     PrismaService,
-    CreateUserUseCase,
-    AuthUseCase,
-    JwtStrategy,
+    CreateSessionUseCase,
+    FindSessionUseCase,
   ],
 })
-export class AuthenticationModule {}
+export class SessionModule {}
